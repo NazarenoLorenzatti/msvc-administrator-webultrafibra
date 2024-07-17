@@ -21,10 +21,10 @@ import org.springframework.web.multipart.MultipartFile;
 @Data
 public class ObsServiceImpl implements iObsService {
 
-    private final String AK = "ZEN8YOXYCQBKP3KBW1YH";
-    private final String SK = "lH38DmKWYJ0JMZCSNKhtDxIbPMpU94bplqIZNklo";
-    private final String END_POINT = "https://obs.sa-argentina-1.myhuaweicloud.com";
-    private final String BUCKETNAME = "ultra-storage";
+    private final String AK = "***************";
+    private final String SK = "****************************";
+    private final String END_POINT = "****************************";
+    private final String BUCKETNAME = "********************";
 
     @Autowired
     private iImgSectionDao imgDao;
@@ -56,7 +56,7 @@ public class ObsServiceImpl implements iObsService {
         try {
             long expireSeconds = 21600L;
             TemporarySignatureRequest request = new TemporarySignatureRequest(HttpMethodEnum.GET, expireSeconds);
-            request.setBucketName("ultra-storage");
+            request.setBucketName("**********");
             request.setObjectKey(accessKey);
             TemporarySignatureResponse response = obsClient.createTemporarySignature(request);
             System.out.println("Getting object using temporary signature url:");
