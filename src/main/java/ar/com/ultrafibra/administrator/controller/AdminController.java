@@ -1,25 +1,18 @@
 package ar.com.ultrafibra.administrator.controller;
 
 import ar.com.ultrafibra.administrator.entities.SectionsWeb;
-import ar.com.ultrafibra.administrator.responses.CityResponseRest;
-import ar.com.ultrafibra.administrator.responses.SectionsWebResponseRest;
-import ar.com.ultrafibra.administrator.services.impl.AdministratorServiceImpl;
-import ar.com.ultrafibra.administrator.services.impl.CityServiceImpl;
-import ar.com.ultrafibra.administrator.services.impl.ObsServiceImpl;
+import ar.com.ultrafibra.administrator.responses.*;
+import ar.com.ultrafibra.administrator.services.impl.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 @RestController
 @CrossOrigin(origins = {
+    "http://119.8.72.246",
+    "https://119.8.72.246",
+    "https://ultrafibra.com.ar",
     "*"})
 @RequestMapping("/api/uf")
 public class AdminController {
@@ -45,7 +38,7 @@ public class AdminController {
         return cityService.getCities();
     }
 
-    @PutMapping(path = "im")
+    @PutMapping(path = "/edit-text")
     public ResponseEntity<SectionsWebResponseRest> editText(@RequestBody SectionsWeb sectionsWeb) {
         return adminService.editSectionText(sectionsWeb);
     }

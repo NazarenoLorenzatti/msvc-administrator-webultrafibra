@@ -5,6 +5,5 @@ import org.springframework.http.ResponseEntity;
 
 public interface iCityService {
     
-     public ResponseEntity<CityResponseRest> getCity(Long id);
      public ResponseEntity<CityResponseRest> getCities();
 }

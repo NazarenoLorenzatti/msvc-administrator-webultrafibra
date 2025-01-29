@@ -5,43 +5,39 @@ import ar.com.ultrafibra.administrator.entities.Cities;
 import ar.com.ultrafibra.administrator.responses.CityResponseRest;
 import ar.com.ultrafibra.administrator.services.iCityService;
 import java.util.List;
-import java.util.Optional;
-import lombok.Data;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.*;
 import org.springframework.stereotype.Service;
 
+@Slf4j
 @Service
-@Data
+@RequiredArgsConstructor
 public class CityServiceImpl implements iCityService {
 
-    @Autowired
-    private iCitiesDao cityDao;
-
-    @Override
-    public ResponseEntity<CityResponseRest> getCity(Long id) {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
-    }
+    private final iCitiesDao cityDao;
 
     @Override
     public ResponseEntity<CityResponseRest> getCities() {
-        CityResponseRest respuesta = new CityResponseRest();
-        List<Cities> list = cityDao.findAll();
         try {
-            if (!list.isEmpty()) {
-                respuesta.getCitiesResponse().setCities(list);
-                respuesta.setMetadata("Respuesta ok", "00", "Lista de localidades encontrada");
-                return new ResponseEntity<>(respuesta, HttpStatus.OK);
-            } else {
-                respuesta.setMetadata("Respuesta nok", "-1", "No se encontro ninguna ciudad");
-                return new ResponseEntity<>(respuesta, HttpStatus.NOT_FOUND);
-            }
+            List<Cities> cities = cityDao.findAll();
+            return cities.isEmpty()
+                    ? buildResponse(null, HttpStatus.NOT_FOUND, "No se encontró ninguna ciudad")
+                    : buildResponse(cities, HttpStatus.OK, "Lista de localidades encontrada");
         } catch (Exception e) {
-            respuesta.setMetadata("Respuesta nok", "-1", "Error al consultar");
-            e.getStackTrace();
-            return new ResponseEntity<>(respuesta, HttpStatus.INTERNAL_SERVER_ERROR);
+            log.error("Error al consultar ciudades", e);
+            return buildResponse(null, HttpStatus.INTERNAL_SERVER_ERROR, "Error al consultar");
         }
+    }
 
+    private ResponseEntity<CityResponseRest> buildResponse(List<Cities> cities, HttpStatus status, String message) {
+        CityResponseRest response = new CityResponseRest();
+        if (cities != null) {
+            response.getCitiesResponse().setCities(cities);
+        }
+        response.setMetadata("Respuesta " + (status.is2xxSuccessful() ? "ok" : "nok"), 
+                             status == HttpStatus.OK ? "00" : "-1", 
+                             message);
+        return new ResponseEntity<>(response, status);
     }
 }
