@@ -28,6 +28,7 @@ target/
 build/
 !**/src/main/**/build/
 !**/src/test/**/build/
+/src/main/java/ar/com/ultrafibra/administrator/services/impl/ObsServiceImpl.java
 
 ### VS Code ###
 .vscode/
