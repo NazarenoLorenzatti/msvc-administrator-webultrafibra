@@ -1,6 +1,3 @@
-
-Aquí tienes una versión mejorada y más profesional de la redacción para tu repositorio de GitHub:
-
 Microservicio de Gestión de Recursos Multimedia – UltraFibra
 Este microservicio está diseñado para administrar y proporcionar acceso eficiente a los recursos multimedia utilizados en la página web de UltraFibra. Su principal función es gestionar la obtención de imágenes, videos y otros activos digitales almacenados en Huawei Object Storage Service (OBS), así como en la base de datos correspondiente.
 
