@@ -7,7 +7,6 @@ import com.obs.services.exception.ObsException;
 import com.obs.services.model.HttpMethodEnum;
 import com.obs.services.model.TemporarySignatureRequest;
 import com.obs.services.model.TemporarySignatureResponse;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Async;
@@ -16,32 +15,36 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import org.springframework.beans.factory.annotation.Autowired;
 
 @Slf4j
 @Service
-@RequiredArgsConstructor
 public class ObsServiceImpl implements iObsService {
 
     @Value("${app.ak}")
-    private final String accessKey;
+    private String accessKey;
+
     @Value("${app.sk}")
-    private final String secretKey;
+    private String secretKey;
+
     @Value("${app.endpoint}")
-    private final String endPoint;
+    private String endPoint;
+
     @Value("${app.bucketname}")
-    private final String bucketName;
-    
-    private final iImgSectionDao imgDao;
+    private String bucketName;
+
+    @Autowired
+    private iImgSectionDao imgDao;
 
     @Override
     public String putObsObject(MultipartFile img, String objectKey) {
-        try (ObsClient obsClient = createObsClient()) {
+        try ( ObsClient obsClient = createObsClient()) {
             obsClient.putObject(bucketName, objectKey, new ByteArrayInputStream(img.getBytes()));
             log.info("Archivo subido con éxito a OBS: {}", objectKey);
             return generateSignedUrl(objectKey);
         } catch (ObsException e) {
-            log.error("Error al subir objeto a OBS - HTTP Code: {}, Error Code: {}, Message: {}", 
-                      e.getResponseCode(), e.getErrorCode(), e.getErrorMessage(), e);
+            log.error("Error al subir objeto a OBS - HTTP Code: {}, Error Code: {}, Message: {}",
+                    e.getResponseCode(), e.getErrorCode(), e.getErrorMessage(), e);
         } catch (IOException e) {
             log.error("Error de I/O al subir el objeto a OBS", e);
         }
@@ -50,7 +53,7 @@ public class ObsServiceImpl implements iObsService {
 
     @Override
     public String generateSignedUrl(String objectKey) {
-        try (ObsClient obsClient = createObsClient()) {
+        try ( ObsClient obsClient = createObsClient()) {
             TemporarySignatureRequest request = new TemporarySignatureRequest(HttpMethodEnum.GET, 21600L);
             request.setBucketName(bucketName);
             request.setObjectKey(objectKey);
@@ -58,8 +61,8 @@ public class ObsServiceImpl implements iObsService {
             log.info("URL firmada generada con éxito: {}", response.getSignedUrl());
             return response.getSignedUrl();
         } catch (ObsException e) {
-            log.error("Error al generar URL firmada - HTTP Code: {}, Error Code: {}, Message: {}", 
-                      e.getResponseCode(), e.getErrorCode(), e.getErrorMessage(), e);
+            log.error("Error al generar URL firmada - HTTP Code: {}, Error Code: {}, Message: {}",
+                    e.getResponseCode(), e.getErrorCode(), e.getErrorMessage(), e);
         } catch (IOException e) {
             log.error("Error de I/O al generar la URL firmada", e);
         }
@@ -67,7 +70,8 @@ public class ObsServiceImpl implements iObsService {
     }
 
     @Async
-    @Scheduled(fixedDelay = 19800L)
+    @Scheduled(fixedDelay = 600000L)
+    @Override
     public void renewSignedUrls() {
         imgDao.findAll().forEach(img -> {
             String newUrl = generateSignedUrl(img.getAccessKey());

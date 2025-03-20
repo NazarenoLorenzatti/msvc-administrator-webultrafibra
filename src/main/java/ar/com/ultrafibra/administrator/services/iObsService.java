@@ -7,4 +7,6 @@ public interface iObsService {
     public String putObsObject(MultipartFile img, String objectKey);
     
     public String generateSignedUrl(String objectKey);
+    
+    public void renewSignedUrls();
 }

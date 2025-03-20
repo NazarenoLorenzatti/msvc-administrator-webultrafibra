@@ -2,6 +2,8 @@ package ar.com.ultrafibra.administrator.controller;
 
 import ar.com.ultrafibra.administrator.entities.SectionsWeb;
 import ar.com.ultrafibra.administrator.responses.*;
+import ar.com.ultrafibra.administrator.services.iAdministratorService;
+import ar.com.ultrafibra.administrator.services.iCityService;
 import ar.com.ultrafibra.administrator.services.impl.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -18,10 +20,10 @@ import org.springframework.web.multipart.MultipartFile;
 public class AdminController {
 
     @Autowired
-    private AdministratorServiceImpl adminService;
+    private iAdministratorService adminService;
 
     @Autowired
-    private CityServiceImpl cityService;
+    private iCityService cityService;
 
     @GetMapping(path = "/get-section/id/{id}")
     public ResponseEntity<SectionsWebResponseRest> getSection(@PathVariable Long id) {

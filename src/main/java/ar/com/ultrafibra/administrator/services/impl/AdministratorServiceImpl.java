@@ -4,22 +4,29 @@ import ar.com.ultrafibra.administrator.dao.*;
 import ar.com.ultrafibra.administrator.entities.*;
 import ar.com.ultrafibra.administrator.responses.SectionsWebResponseRest;
 import ar.com.ultrafibra.administrator.services.iAdministratorService;
+import ar.com.ultrafibra.administrator.services.iObsService;
 import java.io.IOException;
 import java.util.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.*;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 @Slf4j
 @Service
-@RequiredArgsConstructor
-public class AdministratorServiceImpl implements iAdministratorService {
 
-    private final iSectionsWebDao sectionsDao;
-    private final iImgSectionDao imgDao;
-    private final ObsServiceImpl obsService;
+public class AdministratorServiceImpl implements iAdministratorService {
+    
+    @Autowired
+    private  iSectionsWebDao sectionsDao;
+    
+    @Autowired
+    private iImgSectionDao imgDao;
+    
+    @Autowired
+    private  iObsService obsService;
 
     @Override
     public ResponseEntity<SectionsWebResponseRest> getSection(Long id) {
